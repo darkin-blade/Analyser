@@ -7,18 +7,27 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Analyser extends AppCompatActivity {
     static int item_height;
     static int name_padding;
     static int type_padding;
     static int screen_width;
+    static int size_padding;
+
+    int total_size;// 目录下文件总大小
 
     TextView curPath;
 
@@ -37,13 +46,20 @@ public class Analyser extends AppCompatActivity {
         initNum();
 
         curPath = findViewById(R.id.cur_path);
-        readPath(getExternalFilesDir("").getAbsolutePath());// TODO app目录
+        File tempFile = getExternalFilesDir("");
+        String path = tempFile.getParent();
+        for (int i = 0; i < 3 ; i ++) {
+            tempFile = new File(path);
+            path = tempFile.getParent();
+        }
+        readPath(path);// TODO 根目录
     }
 
     public void initNum() {
         item_height = 130;
         name_padding = 40;
         type_padding = 20;
+        size_padding = 10;
         screen_width = getWindowManager().getDefaultDisplay().getWidth();// 获取屏幕宽度
     }
 
@@ -55,25 +71,56 @@ public class Analyser extends AppCompatActivity {
 
         LinearLayout layout = findViewById(R.id.item_list);
         layout.removeAllViews();
-        createItem(2, "..", dirPath);// 父目录
+
+        // 显示路径
+        curPath.setText(dirPath);
 
         // 遍历文件夹
         File dir = new File(dirPath);
         File[] items = dir.listFiles();
 
-
-        if (items != null) {
-            for (int i = 0; i < items.length ; i++) {
-                if (items[i].isDirectory()) {
-                    createItem(1, items[i].getName(), dirPath);
-                } else {
-                    createItem(0, items[i].getName(), dirPath);
-                }
-            }
+        if (items == null) {// 该目录没有文件
+            total_size = 1;
+            createItem(2, "..", dirPath, 1);// 父目录
+            return;
         }
 
-        // 显示路径
-        curPath.setText(dirPath);
+        // 计算目录总大小
+        total_size = 0;
+        for (int i = 0; i < items.length ; i ++) {
+            total_size += items[i].length();
+        }
+
+        // TODO
+        for (int i = 0; i < items.length ; i ++) {
+            Log.i("fuck", items[i].getName());
+        }
+
+        // 按大小排序
+        Collections.sort(Arrays.asList(items), new Comparator<File>() {// TODO
+            @Override
+            public int compare(File file1, File file2) {// 降序
+                if (file1.length() < file2.length()) {
+                    return 1;
+                } else if (file1.length() > file2.length()) {
+                    return -1;
+                }
+                return 0;// 需要考虑相等
+            }
+        });
+
+        // TODO
+        for (int i = 0; i < items.length ; i ++) {
+            Log.i("fuck", items[i].getName());
+        }
+
+        for (int i = 0; i < items.length ; i ++) {
+            if (items[i].isDirectory()) {
+                createItem(1, items[i].getName(), dirPath, (int) items[i].length());
+            } else {
+                createItem(0, items[i].getName(), dirPath, (int) items[i].length());
+            }
+        }
     }
 
     static public void info(Context context, String log) {
@@ -85,11 +132,13 @@ public class Analyser extends AppCompatActivity {
         toast.show();
     }
 
-    private LinearLayout createItem(int itemType, final String itemName, final String itemPath) {// 创建图标
+    private LinearLayout createItem(int itemType, final String itemName, final String itemPath, int size) {// 创建图标
         LinearLayout layout = findViewById(R.id.item_list);
         LinearLayout.LayoutParams itemParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, item_height);
         LinearLayout.LayoutParams typeParam = new LinearLayout.LayoutParams(item_height, item_height);
         LinearLayout.LayoutParams iconParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams rParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams sizeParam = new LinearLayout.LayoutParams((int)((float)screen_width * size / screen_width) , LinearLayout.LayoutParams.MATCH_PARENT);
         LinearLayout.LayoutParams nameParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
         LinearLayout item = new LinearLayout(this);
@@ -109,16 +158,26 @@ public class Analyser extends AppCompatActivity {
             icon.setBackgroundResource(R.drawable.item_dir);
         }
 
+        RelativeLayout relativeLayout = new RelativeLayout(this);// 使大小显示为文件名的背景
+        relativeLayout.setLayoutParams(rParam);
+
+        View itemSize = new View(this);// 文件大小
+        itemSize.setLayoutParams(sizeParam);
+        itemSize.setBackgroundResource(R.color.color_4);
+        itemSize.setPadding(size_padding, size_padding, size_padding, size_padding);
+
         TextView name = new TextView(this);// 文件名
         name.setLayoutParams(nameParam);
-        name.setBackgroundResource(R.color.grey);
+        name.setBackgroundResource(R.color.transparent);// 必须透明
         name.setText(itemName);
         name.setPadding(name_padding, name_padding, name_padding, name_padding);
         name.setSingleLine();
 
         type.addView(icon);
         item.addView(type);
-        item.addView(name);
+        relativeLayout.addView(itemSize);
+        relativeLayout.addView(name);
+        item.addView(relativeLayout);
 
         if (itemType == 2) {// 父文件夹
             item.setOnClickListener(new View.OnClickListener() {
