@@ -77,7 +77,6 @@
                         android:padding="20dp">
                     </TextView>
                 </RelativeLayout>
-
             </LinearLayout>
 
 

@@ -59,7 +59,7 @@ public class Analyser extends AppCompatActivity {
         name_padding = 35;
         type_padding = 20;
         size_padding = 5;
-        screen_width = getWindowManager().getDefaultDisplay().getWidth();// 获取屏幕宽度
+        screen_width = getWindowManager().getDefaultDisplay().getWidth() - item_height;// 获取屏幕宽度
     }
 
     public static long getSize(File file) {// 计算文件夹大小
@@ -97,7 +97,7 @@ public class Analyser extends AppCompatActivity {
 
         if (files == null) {// 该目录没有文件
             total_size = 1;
-            createItem(2, "..", dirPath, 1);// 父目录
+            createItem(2, "..", dirPath, total_size);// 父目录
             return;
         }
 
@@ -124,6 +124,9 @@ public class Analyser extends AppCompatActivity {
             }
         });
 
+        if (total_size == 0) {// TODO 不知道什么情况
+            total_size = 1;
+        }
         createItem(2, "..", dirPath, total_size);// 父目录
 
         for (int i = 0; i < items.length ; i ++) {
@@ -145,6 +148,8 @@ public class Analyser extends AppCompatActivity {
     }
 
     private LinearLayout createItem(int itemType, final String itemName, final String itemPath, long size) {// 创建图标
+        Log.i("fuck", screen_width + "/" + size + "/" + total_size);
+
         LinearLayout layout = findViewById(R.id.item_list);
         LinearLayout.LayoutParams itemParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, item_height);
         LinearLayout.LayoutParams typeParam = new LinearLayout.LayoutParams(item_height, item_height);
