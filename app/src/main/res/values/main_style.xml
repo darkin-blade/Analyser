@@ -3,6 +3,8 @@
     <dimen name="tab_height">35dp</dimen>
     <dimen name="item_height">65dp</dimen>
     <dimen name="title_size">20dp</dimen>
+    <!-- 底部高度 -->
+    <dimen name="bottom_height">60dp</dimen>
 
     <!-- 横线 -->
     <style name="file_manager">
@@ -24,5 +26,21 @@
     <style name="grey_title" parent="black_title">
         <item name="android:background">@color/tab_black</item>
         <item name="android:textSize">19dp</item>
+    </style>
+
+    <!-- 弹窗按钮 -->
+    <style name="exit_button">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+
+        <item name="android:gravity">center</item>
+        <item name="android:lines">1</item>
+        <item name="android:textSize">16dp</item>
+
+        <item name="android:background">@drawable/button_exit</item>
+        <item name="android:text">Exit</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_marginLeft">4dp</item>
     </style>
 </resources>
