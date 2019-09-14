@@ -1,8 +1,10 @@
 package com.example.analyser;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -17,12 +19,22 @@ public class Analyser extends AppCompatActivity {
     static int name_padding = 40;
     static int type_padding = 20;
 
+    TextView curPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 检查权限
+        String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
+        int check_result = ActivityCompat.checkSelfPermission(this, permission);// `允许`返回0,`拒绝`返回-1
+        if (check_result != PackageManager.PERMISSION_GRANTED) {// 没有`写`权限
+            ActivityCompat.requestPermissions(this, new String[]{permission}, 1);// 获取`写`权限
+        }
+
         readPath(getExternalFilesDir("").getAbsolutePath());// TODO app目录
+        curPath = findViewById(R.id.cur_path);
     }
 
     public void readPath(String dirPath) {
@@ -34,6 +46,22 @@ public class Analyser extends AppCompatActivity {
         LinearLayout layout = findViewById(R.id.item_list);
         layout.removeAllViews();
         createItem(2, "..", dirPath);// 父目录
+
+        // 遍历文件夹
+        File dir = new File(dirPath);
+        File[] items = dir.listFiles();
+        if (items != null) {
+            for (int i = 0; i < items.length ; i++) {
+                if (items[i].isDirectory()) {
+                    createItem(1, items[i].getName(), dirPath);
+                } else {
+                    createItem(0, items[i].getName(), dirPath);
+                }
+            }
+        }
+
+        // 显示路径
+        curPath.setText(dirPath);// TODO 简化路径
     }
 
     static public void info(Context context, String log) {
