@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Analyser"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
     android:background="@color/grey">
 
@@ -14,16 +13,19 @@
         style="@style/black_title">
     </TextView>
 
+
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="@dimen/tab_height"
         android:scrollbars="none">
         <TextView
             android:id="@+id/cur_path"
-            android:maxLines="1"
-            android:text="asdfsadfadsfsd"
-            style="@style/grey_title">
+            android:text="111aaaaaaaaa111"
+            style="@style/grey_title"
+            android:scrollHorizontally="true"
+            android:focusable="false">
         </TextView>
     </HorizontalScrollView>
+
 
 </LinearLayout>
