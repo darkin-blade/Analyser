@@ -15,16 +15,17 @@ import android.widget.Toast;
 import java.io.File;
 
 public class Analyser extends AppCompatActivity {
-    static int item_height = 130;
-    static int name_padding = 40;
-    static int type_padding = 20;
+    static int item_height;
+    static int name_padding;
+    static int type_padding;
+    static int screen_width;
 
     TextView curPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.analyser_layout);
 
         // 检查权限
         String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
@@ -33,8 +34,17 @@ public class Analyser extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{permission}, 1);// 获取`写`权限
         }
 
-        readPath(getExternalFilesDir("").getAbsolutePath());// TODO app目录
+        initNum();
+
         curPath = findViewById(R.id.cur_path);
+        readPath(getExternalFilesDir("").getAbsolutePath());// TODO app目录
+    }
+
+    public void initNum() {
+        item_height = 130;
+        name_padding = 40;
+        type_padding = 20;
+        screen_width = getWindowManager().getDefaultDisplay().getWidth();// 获取屏幕宽度
     }
 
     public void readPath(String dirPath) {
@@ -50,6 +60,8 @@ public class Analyser extends AppCompatActivity {
         // 遍历文件夹
         File dir = new File(dirPath);
         File[] items = dir.listFiles();
+
+
         if (items != null) {
             for (int i = 0; i < items.length ; i++) {
                 if (items[i].isDirectory()) {
@@ -61,7 +73,7 @@ public class Analyser extends AppCompatActivity {
         }
 
         // 显示路径
-        curPath.setText(dirPath);// TODO 简化路径
+        curPath.setText(dirPath);
     }
 
     static public void info(Context context, String log) {
@@ -80,7 +92,7 @@ public class Analyser extends AppCompatActivity {
         LinearLayout.LayoutParams iconParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         LinearLayout.LayoutParams nameParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
-        LinearLayout item = new LinearLayout(this);// TODO 参数
+        LinearLayout item = new LinearLayout(this);
         item.setLayoutParams(itemParam);
         item.setBackgroundResource(R.color.grey);
         item.setPadding(name_padding, 0, 0, 0);
