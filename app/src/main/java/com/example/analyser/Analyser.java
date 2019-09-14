@@ -3,12 +3,14 @@ package com.example.analyser;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,8 +29,10 @@ public class Analyser extends AppCompatActivity {
     static int size_padding;
 
     long total_size;// 目录下文件总大小
+    int isExit;
 
     TextView curPath;
+    Button exitBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +47,8 @@ public class Analyser extends AppCompatActivity {
         }
 
         initNum();
+        initView();
 
-        curPath = findViewById(R.id.cur_path);
         File tempFile = getExternalFilesDir("");
         String path = tempFile.getParent();
         for (int i = 0; i < 3 ; i ++) {
@@ -54,12 +58,32 @@ public class Analyser extends AppCompatActivity {
         readPath(path);// TODO 根目录
     }
 
+    public void initView() {
+        curPath = findViewById(R.id.cur_path);
+        exitBtn = findViewById(R.id.exit_button);// 退出键
+        exitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isExit = 1;
+                onBackPressed();
+            }
+        });
+    }
+
     public void initNum() {
         item_height = 130;
         name_padding = 35;
         type_padding = 20;
         size_padding = 5;
         screen_width = getWindowManager().getDefaultDisplay().getWidth() - item_height;// 获取屏幕宽度
+        isExit = 0;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isExit == 1) {
+            super.onBackPressed();
+        }
     }
 
     public static long getSize(File file) {// 计算文件夹大小
@@ -181,7 +205,7 @@ public class Analyser extends AppCompatActivity {
 
         View itemSize = new View(this);// 文件大小
         itemSize.setLayoutParams(sizeParam);
-        itemSize.setBackgroundResource(R.color.color_4);
+        itemSize.setBackgroundResource(R.color.color_1);
 
         TextView name = new TextView(this);// 文件名
         name.setLayoutParams(nameParam);
