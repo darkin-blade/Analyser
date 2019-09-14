@@ -63,11 +63,11 @@ public class Analyser extends AppCompatActivity {
     }
 
     public static long getSize(File file) {// 计算文件夹大小
+        long size = file.length();// 文件夹也有大小
         if (file.isFile()) {
-            return file.length();
+            return size;
         }
 
-        long size = file.length();// 文件夹也有大小
         File[] items = file.listFiles();
         if (items == null) {// 目录是否非空
             return size;
@@ -105,7 +105,8 @@ public class Analyser extends AppCompatActivity {
         total_size = 0;
         Item[] items = new Item[files.length];// 用于排序
         for (int i = 0; i < files.length ; i ++) {
-            items[i].size = getSize(files[i]);
+            items[i] = new Item();
+            items[i].size = getSize(files[i]);// 记录大小
             items[i].file = files[i];// 用于获取名字
             total_size += items[i].size;
         }
@@ -149,7 +150,7 @@ public class Analyser extends AppCompatActivity {
         LinearLayout.LayoutParams typeParam = new LinearLayout.LayoutParams(item_height, item_height);
         LinearLayout.LayoutParams iconParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         LinearLayout.LayoutParams rParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        LinearLayout.LayoutParams sizeParam = new LinearLayout.LayoutParams((int)((float)screen_width * size * 2 / total_size) , LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams sizeParam = new LinearLayout.LayoutParams((int)((float)screen_width * size / total_size) , LinearLayout.LayoutParams.MATCH_PARENT);
         LinearLayout.LayoutParams nameParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
         LinearLayout item = new LinearLayout(this);
