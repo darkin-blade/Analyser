@@ -93,9 +93,9 @@ public class Analyser extends AppCompatActivity {
 
         // 遍历文件夹
         File dir = new File(dirPath);
-        File[] items = dir.listFiles();
+        File[] files = dir.listFiles();
 
-        if (items == null) {// 该目录没有文件
+        if (files == null) {// 该目录没有文件
             total_size = 1;
             createItem(2, "..", dirPath, 1);// 父目录
             return;
@@ -103,19 +103,20 @@ public class Analyser extends AppCompatActivity {
 
         // 计算目录总大小
         total_size = 0;
-        long[] itemSizes = new long[items.length];// 存储大小
-        for (int i = 0; i < items.length ; i ++) {
-            itemSizes[i] = getSize(items[i]);
-            total_size += itemSizes[i];
+        Item[] items = new Item[files.length];// 用于排序
+        for (int i = 0; i < files.length ; i ++) {
+            items[i].size = getSize(files[i]);
+            items[i].file = files[i];// 用于获取名字
+            total_size += items[i].size;
         }
 
         // 按大小排序
-        Collections.sort(Arrays.asList(items), new Comparator<File>() {// TODO
+        Collections.sort(Arrays.asList(items), new Comparator<Item>() {// TODO
             @Override
-            public int compare(File file1, File file2) {// 降序
-                if (file1.length() < file2.length()) {
+            public int compare(Item item1, Item item2) {// 降序
+                if (item1.size < item2.size) {
                     return 1;
-                } else if (file1.length() > file2.length()) {
+                } else if (item1.size > item2.size) {
                     return -1;
                 }
                 return 0;// 需要考虑相等
@@ -125,10 +126,10 @@ public class Analyser extends AppCompatActivity {
         createItem(2, "..", dirPath, total_size);// 父目录
 
         for (int i = 0; i < items.length ; i ++) {
-            if (items[i].isDirectory()) {
-                createItem(1, items[i].getName(), dirPath, itemSizes[i]);
+            if (items[i].file.isDirectory()) {
+                createItem(1, items[i].file.getName(), dirPath, items[i].size);
             } else {
-                createItem(0, items[i].getName(), dirPath, itemSizes[i]);
+                createItem(0, items[i].file.getName(), dirPath, items[i].size);
             }
         }
     }
