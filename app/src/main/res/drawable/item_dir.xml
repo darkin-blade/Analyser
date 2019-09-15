@@ -8,12 +8,12 @@
     android:viewportHeight="60">
 
     <path
-        android:fillColor="#ffc430"
+        android:fillColor="#10a0f0"
         android:pathData="M30,7.5 L60,7.5 60,10 35,10">
     </path>
 
     <path
-        android:fillColor="#ffe060"
+        android:fillColor="#40d0ff"
         android:pathData="M0,5 L25,5 35,10 60,10 60,55 0,55">
     </path>
 

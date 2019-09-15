@@ -200,8 +200,9 @@ public class Analyser extends AppCompatActivity {
         }
 
         RelativeLayout relativeLayout = new RelativeLayout(this);// 使大小显示为文件名的背景
+        rParam.setMargins(size_padding, size_padding, size_padding, size_padding);
         relativeLayout.setLayoutParams(rParam);
-        relativeLayout.setPadding(size_padding, size_padding, size_padding, size_padding);
+        relativeLayout.setBackgroundResource(R.color.grey_light);
 
         View itemSize = new View(this);// 文件大小
         itemSize.setLayoutParams(sizeParam);

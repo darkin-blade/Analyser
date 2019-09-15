@@ -12,6 +12,6 @@
     <color name="toast_black">#c0000000</color>
     <color name="transparent">#00000000</color>
 
-    <color name="color_1">#af88f0</color>
-    <color name="color_4">#efa050</color>
+    <color name="color_1">#00cff0</color>
+    <color name="color_4">#af88f0</color>
 </resources>
